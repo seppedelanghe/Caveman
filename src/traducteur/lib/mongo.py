@@ -4,8 +4,8 @@ from typing import Optional
 from bson import ObjectId
 import os
 
-from caveman.lib.model import BaseModel
-from caveman.lib.manager import MongoModelManager
+from traducteur.lib.model import BaseModel
+from traducteur.lib.manager import MongoModelManager
 
 class PydanticObjectId(ObjectId):
     @classmethod
@@ -57,8 +57,8 @@ class BaseMongoModel(BaseModel):
 
     @classmethod
     def __get_manager(cls):
-        con_str = os.environ['CAVEMAN_CONNECTION_STR']
-        db_name = os.environ['CAVEMANE_DB_NAME']
+        con_str = os.environ['TRADUCTEUR_CONNECTION_STR']
+        db_name = os.environ['TRADUCTEUR_CONNECTION_STR']
         return MongoModelManager(con_str, db_name)
 
     @classmethod

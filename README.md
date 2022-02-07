@@ -1,6 +1,6 @@
-# Caveman
+# Traducteur
 
-Caveman is a pydantic model based database manager.
+Traducteur is a pydantic model based database manager.
 It currently only supports mongodb.
 
 ## Requirements
@@ -20,17 +20,17 @@ It currently only supports mongodb.
 import os
 
 CON_STR = 'mongodb://root:example@localhost:27017/'
-DB_NAME = 'caveman'
+DB_NAME = 'traducteur'
 
-os.environ['CAVEMAN_CONNECTION_STR'] = CON_STR
-os.environ['CAVEMANE_DB_NAME'] = DB_NAME
+os.environ['TRADUCTEUR_CONNECTION_STR'] = CON_STR
+os.environ['TRADUCTEUR_DB_NAME'] = DB_NAME
 
 
 '''
     Import the base model for the database you are using.
 '''
 
-from caveman import BaseMongoModel
+from traducteur import BaseMongoModel
 
 '''
     Make a model using the base model.

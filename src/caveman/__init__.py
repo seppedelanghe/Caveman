@@ -1,1 +1,0 @@
-from caveman.lib.mongo import BaseMongoModel
