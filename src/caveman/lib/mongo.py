@@ -1,11 +1,11 @@
-from datetime import date, datetime
+from datetime import datetime
 from pydantic import Field
 from typing import Optional
 from bson import ObjectId
 import os
 
-from lib.model import BaseModel
-from lib.manager import MongoModelManager
+from caveman.lib.model import BaseModel
+from caveman.lib.manager import MongoModelManager
 
 class PydanticObjectId(ObjectId):
     @classmethod

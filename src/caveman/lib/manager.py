@@ -1,5 +1,5 @@
-from lib.model import BaseModel
-from lib.context import MongoContext
+from caveman.lib.model import BaseModel
+from caveman.lib.context import MongoContext
 from bson import ObjectId
 
 class BaseModelManager:

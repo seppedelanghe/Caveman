@@ -1,8 +1,6 @@
 from pydantic import BaseModel as BasePydanticModel
 from datetime import datetime
 from typing import Optional, Any
-import os
-
 
 class BaseModel(BasePydanticModel):
     created_at: Optional[datetime] = None
