@@ -1,5 +1,5 @@
-from traducteur.lib.model import BaseModel
-from traducteur.lib.context import MongoContext
+from traducteur.lib.model import BaseModel, BaseSQLModel
+from traducteur.lib.context import MongoContext, SQLite3Context
 from bson import ObjectId
 
 class BaseModelManager:
@@ -25,6 +25,50 @@ class BaseModelManager:
     def delete_one(self, query):
         pass
 
+
+class SQLModelManager(BaseModelManager):
+    def __init__(self, connection_string: str, database_name):
+        super().__init__(connection_string, database_name)
+
+    def query(self, query: str):
+        with SQLite3Context(self.connection_string, self.database_name) as db:
+            return db.execute(query)
+
+    def exists(self, col: str, id: str):
+        with SQLite3Context(self.connection_string, self.database_name) as db:
+            query = f"SELECT COUNT(id) FROM {col} WHERE id = ?;"
+            cursor = db.execute(query, id)
+            return len(cursor) >= 1
+
+    def get_one(self, col: str, id: str):
+        with SQLite3Context(self.connection_string, self.database_name) as db:
+            query = f"SELECT * FROM {col} WHERE id = ?;"
+            cursor = db.execute(query, id)
+            return cursor.fetchone()
+
+    def get_many(self, col: str, query, limit: int):
+        with SQLite3Context(self.connection_string, self.database_name) as db:
+            query = f"SELECT * FROM {col} WHERE {', '.join(query)} LIMIT {limit};"
+            cursor = db.execute(query)
+            return cursor.fetchall()
+
+    def insert_one(self, item: BaseSQLModel):
+        with SQLite3Context(self.connection_string, self.database_name) as db:
+            query = f"INSERT INTO {item._col_name} {item.sql_columns} VALUES ({item.q_marks});"
+            cursor = db.execute(query, item.sql_values)
+            return cursor.lastrowid
+
+    def update_one(self, update: BaseSQLModel):
+        with SQLite3Context(self.connection_string, self.database_name) as db:
+            query = f"UPDATE {update._col_name} SET {update.sql_update} WHERE id = ?;"
+            cursor = db.execute(query, update.id)
+            return cursor.lastrowid
+
+    def delete_one(self, item: BaseSQLModel):
+        with SQLite3Context(self.connection_string, self.database_name) as db:
+            query = f"DELETE FROM {item._col_name} WHERE id = ?;"
+            cursor = db.execute(query, item.id)
+            return True
 
 class MongoModelManager(BaseModelManager):
     def __init__(self, connection_string: str, database_name):

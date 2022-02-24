@@ -7,6 +7,14 @@ class BaseModel(BasePydanticModel):
     updated_at: Optional[datetime] = None
     deleted_at: Optional[datetime] = None
 
+    @property
+    def column_names(self):
+        return [str(col).lower() for col in self.dict().keys()]
+
+    @property
+    def column_values(self):
+        return self.dict().values()
+
     def __init__(__pydantic_self__, **data: Any):
         super().__init__(**data)
 
@@ -21,3 +29,19 @@ class BaseModel(BasePydanticModel):
         pass
 
 
+class BaseSQLModel(BaseModel):
+    @property
+    def sql_columns(self):
+        return tuple(', '.join(self.column_names))
+
+    @property
+    def sql_values(self):
+        return tuple(', '.join(self.column_values))
+
+    @property
+    def q_marks(self):
+        return ', '.join(['?' for _ in len(self.sql_values)])
+
+    @property
+    def sql_update(self):
+        return ', '.join([f"{str(col).lower()} = {val}" for col, val in self.dict().items()])
