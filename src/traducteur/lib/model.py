@@ -13,7 +13,7 @@ class BaseModel(BasePydanticModel):
 
     @property
     def column_values(self):
-        return self.dict().values()
+        return tuple([str(v) for v in self.dict().values()])
 
     def __init__(__pydantic_self__, **data: Any):
         super().__init__(**data)
@@ -32,15 +32,15 @@ class BaseModel(BasePydanticModel):
 class BaseSQLModel(BaseModel):
     @property
     def sql_columns(self):
-        return tuple(', '.join(self.column_names))
+        return ', '.join(self.column_names)
 
     @property
     def sql_values(self):
-        return tuple(', '.join(self.column_values))
+        return ', '.join(self.column_values)
 
     @property
     def q_marks(self):
-        return ', '.join(['?' for _ in len(self.sql_values)])
+        return ', '.join(['?' for _ in range(len(self.column_names))])
 
     @property
     def sql_update(self):

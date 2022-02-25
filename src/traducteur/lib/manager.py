@@ -1,3 +1,4 @@
+from re import sub
 from traducteur.lib.model import BaseModel, BaseSQLModel
 from traducteur.lib.context import MongoContext, SQLite3Context
 from bson import ObjectId
@@ -26,10 +27,49 @@ class BaseModelManager:
         pass
 
 
+
+
 class SQLModelManager(BaseModelManager):
     def __init__(self, connection_string: str, database_name):
         super().__init__(connection_string, database_name)
 
+    def __match_python_type_sql(self, type_name: str):
+        match = {
+            'string': 'TEXT',
+            'integer': 'INT',
+            'float': 'FLOAT(24)',
+        }
+
+        if match[type_name] == None:
+            raise Exception('No SQL type found for ' + type_name)
+
+        return match[type_name]
+
+    def __check_table(self, name: str):
+        query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{name}';"
+        with SQLite3Context(self.connection_string, self.database_name) as db:
+            cursor = db.execute(query)
+            if cursor.fetchone()[0] == name:
+                return True
+            return False
+        
+
+    def create_table(self, schema: dict):
+        if self.__check_table(schema['title']):
+            print('Table already exists')
+            return True
+
+        cols = []
+        for col, val in schema['properties'].items():
+            sql_type = self.__match_python_type_sql(val['type'])
+            req = f"\tNOT NULL" if col in schema['required'] else ""
+            subquery = f"{col}\t{sql_type}{req}"
+            cols.append(subquery)
+
+        query = f"CREATE TABLE {schema['title']} ({', '.join(cols)});"
+        self.query(query)
+
+    # model actions
     def query(self, query: str):
         with SQLite3Context(self.connection_string, self.database_name) as db:
             return db.execute(query)
@@ -54,8 +94,9 @@ class SQLModelManager(BaseModelManager):
 
     def insert_one(self, item: BaseSQLModel):
         with SQLite3Context(self.connection_string, self.database_name) as db:
-            query = f"INSERT INTO {item._col_name} {item.sql_columns} VALUES ({item.q_marks});"
-            cursor = db.execute(query, item.sql_values)
+            query = f"INSERT INTO {item._col_name} ({item.sql_columns}) VALUES ({item.q_marks});"
+            print(query)
+            cursor = db.execute(query, item.column_values)
             return cursor.lastrowid
 
     def update_one(self, update: BaseSQLModel):
@@ -69,6 +110,9 @@ class SQLModelManager(BaseModelManager):
             query = f"DELETE FROM {item._col_name} WHERE id = ?;"
             cursor = db.execute(query, item.id)
             return True
+
+
+
 
 class MongoModelManager(BaseModelManager):
     def __init__(self, connection_string: str, database_name):

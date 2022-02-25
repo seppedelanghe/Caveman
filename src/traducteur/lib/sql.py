@@ -1,14 +1,11 @@
 from datetime import datetime
-from pydantic import Field
-from typing import Optional
-import os
+import os, uuid
 
-from traducteur.lib.model import BaseModel
-from traducteur.lib.manager import MongoModelManager
+from traducteur.lib.model import BaseSQLModel
+from traducteur.lib.manager import SQLModelManager
 
-
-class BaseSQLiteModel(BaseModel):
-    id: str
+class BaseSQLiteModel(BaseSQLModel):
+    id: str = uuid.uuid4().hex
 
     @property
     def _manager(self):
@@ -38,8 +35,8 @@ class BaseSQLiteModel(BaseModel):
     @classmethod
     def __get_manager(cls):
         con_str = os.environ['TRADUCTEUR_CONNECTION_STR']
-        db_name = os.environ['TRADUCTEUR_CONNECTION_STR']
-        return MongoModelManager(con_str, db_name)
+        db_name = os.environ['TRADUCTEUR_DATABASE']
+        return SQLModelManager(con_str, db_name)
 
     @classmethod
     def get(cls, id: str):
@@ -50,3 +47,10 @@ class BaseSQLiteModel(BaseModel):
     @classmethod
     def from_dict(cls, values: dict):
         return cls(**values)
+
+    @classmethod
+    def create_table(cls):
+        schema = cls.schema()
+        
+        manager = cls.__get_manager()
+        manager.create_table(schema)

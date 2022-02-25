@@ -58,7 +58,7 @@ class BaseMongoModel(BaseModel):
     @classmethod
     def __get_manager(cls):
         con_str = os.environ['TRADUCTEUR_CONNECTION_STR']
-        db_name = os.environ['TRADUCTEUR_CONNECTION_STR']
+        db_name = os.environ['TRADUCTEUR_DATABASE']
         return MongoModelManager(con_str, db_name)
 
     @classmethod
