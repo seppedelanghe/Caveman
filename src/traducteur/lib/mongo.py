@@ -2,7 +2,7 @@ from datetime import datetime
 from pydantic import Field
 from typing import Optional
 from bson import ObjectId
-import os
+import os, logging
 
 from traducteur.lib.model import BaseModel
 from traducteur.lib.manager import MongoModelManager
@@ -68,9 +68,15 @@ class BaseMongoModel(BaseModel):
         return cls.from_dict(result)
 
     @classmethod
+    def get_where(cls, query):
+        manager = cls.__get_manager()
+        result = manager.get_many(cls.__name__, query, 1)
+        return cls.from_dict(result[0]) if len(result) else None
+
+    @classmethod
     def exists(cls, id: str) -> bool:
         try:
-            result = cls.__get_manager().exists(cls.__name__, id=id, http_error=False)
+            result = cls.__get_manager().exists(cls.__name__, id=id)
             return result != None
         except Exception:
             return False
@@ -78,9 +84,10 @@ class BaseMongoModel(BaseModel):
     @classmethod
     def exists_where(cls, query) -> bool:
         try:
-            result = cls.__get_manager().exists_where(cls.__name__, query, http_error=False)
+            result = cls.__get_manager().exists_where(cls.__name__, query)
             return result != None
-        except Exception:
+        except Exception as e:
+            logging.error(e)
             return False
 
     @classmethod

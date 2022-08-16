@@ -29,6 +29,10 @@ class BaseModel(BasePydanticModel):
         pass
 
     @classmethod
+    def get_where(cls, query):
+        pass
+
+    @classmethod
     def exists(cls, id):
         pass
 
