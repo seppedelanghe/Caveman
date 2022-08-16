@@ -28,6 +28,14 @@ class BaseModel(BasePydanticModel):
     def get(cls, id: str):
         pass
 
+    @classmethod
+    def exists(cls, id):
+        pass
+
+    @classmethod
+    def exists_where(cls, query):
+        pass
+
 
 class BaseSQLModel(BaseModel):
     @property

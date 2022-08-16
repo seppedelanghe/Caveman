@@ -68,5 +68,21 @@ class BaseMongoModel(BaseModel):
         return cls.from_dict(result)
 
     @classmethod
+    def exists(cls, id: str) -> bool:
+        try:
+            result = cls.__get_manager().exists(cls.__name__, id=id, http_error=False)
+            return result != None
+        except Exception:
+            return False
+
+    @classmethod
+    def exists_where(cls, query) -> bool:
+        try:
+            result = cls.__get_manager().exists_where(cls.__name__, query, http_error=False)
+            return result != None
+        except Exception:
+            return False
+
+    @classmethod
     def from_dict(cls, values: dict):
         return cls(**values)

@@ -11,6 +11,9 @@ class BaseModelManager:
     def exists(self, col: str, id: str):
         pass
 
+    def exists_where(self, col: str, query):
+        pass
+
     def insert_one(self, item: BaseModel):
         pass
 
@@ -122,10 +125,18 @@ class MongoModelManager(BaseModelManager):
         with MongoContext(self.connection_string, self.database_name, col) as column:
             return column.count_documents({'_id': ObjectId(id)}) > 0
 
+    def exists_where(self, col: str, query):
+        with MongoContext(self.connection_string, self.database_name, col) as column:
+            return column.count_documents(query) > 0
+
     def get_one(self, col: str, id: str):
         with MongoContext(self.connection_string, self.database_name, col) as column:
             query = {'_id': ObjectId(id)}
             return column.find_one(query)
+
+    def get_all(self, col: str, limit: int = None):
+        with MongoContext(self.connection_string, self.database_name, col) as column:
+            return list(column.find().limit(limit) if limit != None else column.find())
 
     def get_many(self, col: str, query, limit: int):
         with MongoContext(self.connection_string, self.database_name, col) as column:
