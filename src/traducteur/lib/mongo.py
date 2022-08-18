@@ -68,24 +68,22 @@ class BaseMongoModel(BaseModel):
         return cls.from_dict(result)
 
     @classmethod
-    def get_where(cls, query):
+    def get_where(cls, query, limit: int = 10):
         manager = cls.__get_manager()
-        result = manager.get_many(cls.__name__, query, 1)
-        return cls.from_dict(result[0]) if len(result) else None
+        result = manager.get_many(cls.__name__, query, limit)
+        return [cls.from_dict(i) for i in result] if len(result) > 0 else None
 
     @classmethod
     def exists(cls, id: str) -> bool:
         try:
-            result = cls.__get_manager().exists(cls.__name__, id=id)
-            return result != None
+            return cls.__get_manager().exists(cls.__name__, id=id)
         except Exception:
             return False
 
     @classmethod
     def exists_where(cls, query) -> bool:
         try:
-            result = cls.__get_manager().exists_where(cls.__name__, query)
-            return result != None
+            return cls.__get_manager().exists_where(cls.__name__, query)
         except Exception as e:
             logging.error(e)
             return False
