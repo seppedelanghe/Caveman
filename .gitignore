@@ -7,5 +7,5 @@ wheels
 
 build.ps1
 
-test.py
 .DS_Store
+.env

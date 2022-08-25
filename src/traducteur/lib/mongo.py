@@ -65,7 +65,7 @@ class BaseMongoModel(BaseModel):
     def get(cls, id: str):
         manager = cls.__get_manager()
         result = manager.get_one(cls.__name__, id)
-        return cls.from_dict(result)
+        return cls.from_dict(result) if result else None
 
     @classmethod
     def get_where(cls, query, limit: int = 10):

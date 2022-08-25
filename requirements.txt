@@ -1,2 +1,2 @@
 pymongo>=4.0.1
-pydantic>=1.9.0
+pydantic>=1.9.0dnspython==2.2.1
