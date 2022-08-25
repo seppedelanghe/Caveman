@@ -6,3 +6,5 @@ dist
 wheels
 
 build.ps1
+
+test.py

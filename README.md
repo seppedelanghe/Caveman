@@ -23,7 +23,7 @@ CON_STR = 'mongodb://root:example@localhost:27017/'
 DB_NAME = 'traducteur'
 
 os.environ['TRADUCTEUR_CONNECTION_STR'] = CON_STR
-os.environ['TRADUCTEUR_DB_NAME'] = DB_NAME
+os.environ['TRADUCTEUR_DATABASE'] = DB_NAME
 
 
 '''
