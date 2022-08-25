@@ -126,7 +126,10 @@ class MongoModelManager(BaseModelManager):
             cursor.limit(kwargs.get('limit'))
 
         if 'sort' in kwargs:
-            cursor.sort(kwargs.get('sort'))
+            if 'sortdirection' in kwargs:
+                cursor.sort(kwargs.get('sort'), kwargs.get('sortdirection'))
+            else:
+                cursor.sort(kwargs.get('sort'))
 
         return cursor
 
