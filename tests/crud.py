@@ -42,6 +42,28 @@ class TestCRUDMethods(unittest.TestCase):
 
         self.assertIsNotNone(newuser, 'could not get user')
         self.assertEqual(user_id, newuser.id, 'user ids not equal')
+    
+    def test_get_all(self):
+        self.user.save()
+
+        self.user2 = User(
+            username='adamsandler',
+            fname='Adam',
+            lname='Sandler',
+            email='adam.sandler@mail.com'
+        ).save()
+
+        self.user3 = User(
+            username='tomhanks',
+            fname='Tom',
+            lname='Hanks',
+            email='tom.hanks@mail.com'
+        ).save()
+
+        items = User.all(limit=3)
+        
+        self.assertIsNotNone(items, 'could not get all items')
+        self.assertTrue(len(items) > 0, 'items is a list but is empty')
 
     def test_update(self):
         user = self.user.save()

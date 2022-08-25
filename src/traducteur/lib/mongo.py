@@ -74,6 +74,12 @@ class BaseMongoModel(BaseModel):
         return [cls.from_dict(i) for i in result] if len(result) > 0 else None
 
     @classmethod
+    def all(cls, limit: int = 25, **kwargs):
+        manager = cls.__get_manager()
+        result = manager.get_all(cls.__name__, limit=limit, **kwargs)
+        return [cls.from_dict(i) for i in result] if len(result) > 0 else None
+
+    @classmethod
     def exists(cls, id: str) -> bool:
         try:
             return cls.__get_manager().exists(cls.__name__, id=id)
