@@ -55,7 +55,7 @@ class TestManyMethods(unittest.TestCase):
         self.assertTrue(users[0].fname == 'Adam', 'users not sorted by fname')
 
     def test_sort_desc(self):
-        users = User.all(sort='fname', sortdirection=1)
+        users = User.all(sort='fname', sortdirection=-1)
 
         self.assertIsNotNone(users, 'users is empty')
         self.assertTrue(users[0].fname == 'Tom', 'users not sorted descending by fname')
