@@ -1,7 +1,7 @@
-from re import sub
 from traducteur.lib.model import BaseModel, BaseSQLModel
 from traducteur.lib.context import MongoContext, SQLite3Context
 from bson import ObjectId
+from pymongo.cursor import Cursor
 
 class BaseModelManager:
     def __init__(self, connection_string: str, database_name):
@@ -121,6 +121,15 @@ class MongoModelManager(BaseModelManager):
     def __init__(self, connection_string: str, database_name):
         super().__init__(connection_string, database_name)
 
+    def _after(self, cursor: Cursor, **kwargs):
+        if 'limit' in kwargs:
+            cursor.limit(kwargs.get('limit'))
+
+        if 'sort' in kwargs:
+            cursor.sort(kwargs.get('sort'))
+
+        return cursor
+
     def exists(self, col: str, id: str):
         with MongoContext(self.connection_string, self.database_name, col) as column:
             return column.count_documents({'_id': ObjectId(id)}) > 0
@@ -134,13 +143,15 @@ class MongoModelManager(BaseModelManager):
             query = {'_id': ObjectId(id)}
             return column.find_one(query)
 
-    def get_all(self, col: str, limit: int = None):
+    def get_all(self, col: str, **kwargs):
         with MongoContext(self.connection_string, self.database_name, col) as column:
-            return list(column.find().limit(limit) if limit != None else column.find())
+            cursor = column.find()
+            return list(self._after(cursor, **kwargs))
 
-    def get_many(self, col: str, query, limit: int):
+    def get_many(self, col: str, query, **kwargs):
         with MongoContext(self.connection_string, self.database_name, col) as column:
-            return list(column.find(query).limit(limit))
+            cursor = column.find(query)
+            return list(self._after(cursor, **kwargs))
 
     def insert_one(self, item: BaseModel):
         with MongoContext(self.connection_string, self.database_name, item._col_name) as column:
