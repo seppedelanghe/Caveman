@@ -68,15 +68,19 @@ class BaseMongoModel(BaseModel):
         return cls.from_dict(result) if result else None
 
     @classmethod
-    def get_where(cls, query, limit: int = 10, **kwargs):
+    def get_where_raw(cls, query, **kwargs):
         manager = cls.__get_manager()
-        result = manager.get_many(cls.__name__, query, limit=limit, **kwargs)
+        return manager.get_many(cls.__name__, query, **kwargs)
+
+    @classmethod
+    def get_where(cls, query, **kwargs):
+        result = cls.get_where_raw(query, **kwargs)
         return [cls.from_dict(i) for i in result] if len(result) > 0 else None
 
     @classmethod
-    def all(cls, limit: int = 25, **kwargs):
+    def all(cls, **kwargs):
         manager = cls.__get_manager()
-        result = manager.get_all(cls.__name__, limit=limit, **kwargs)
+        result = manager.get_all(cls.__name__, **kwargs)
         return [cls.from_dict(i) for i in result] if len(result) > 0 else None
 
     @classmethod
