@@ -2,6 +2,7 @@ from traducteur.lib.model import BaseModel, BaseSQLModel
 from traducteur.lib.context import MongoContext, SQLite3Context
 from bson import ObjectId
 from pymongo.cursor import Cursor
+from pymongo.collection import Collection
 
 class BaseModelManager:
     def __init__(self, connection_string: str, database_name):
@@ -133,6 +134,18 @@ class MongoModelManager(BaseModelManager):
 
         return cursor
 
+    def find(self, column: Collection, query = {}, **kwargs):
+        if 'select' in kwargs:
+            return column.find(query, kwargs.get('select'))
+        
+        return column.find(query)
+
+    def find_one(self, column: Collection, query = {}, **kwargs):
+        if 'select' in kwargs:
+            return column.find_one(query, kwargs.get('select'))
+        
+        return column.find_one(query)
+
     def exists(self, col: str, id: str):
         with MongoContext(self.connection_string, self.database_name, col) as column:
             return column.count_documents({'_id': ObjectId(id)}) > 0
@@ -141,19 +154,19 @@ class MongoModelManager(BaseModelManager):
         with MongoContext(self.connection_string, self.database_name, col) as column:
             return column.count_documents(query) > 0
 
-    def get_one(self, col: str, id: str):
+    def get_one(self, col: str, id: str, **kwargs):
         with MongoContext(self.connection_string, self.database_name, col) as column:
             query = {'_id': ObjectId(id)}
-            return column.find_one(query)
+            return self.find_one(column, query, **kwargs)
 
     def get_all(self, col: str, **kwargs):
         with MongoContext(self.connection_string, self.database_name, col) as column:
-            cursor = column.find()
+            cursor = self.find(column, **kwargs)
             return list(self._after(cursor, **kwargs))
 
     def get_many(self, col: str, query, **kwargs):
         with MongoContext(self.connection_string, self.database_name, col) as column:
-            cursor = column.find(query)
+            cursor = self.find(column, query, **kwargs)
             return list(self._after(cursor, **kwargs))
 
     def insert_one(self, item: BaseModel):
