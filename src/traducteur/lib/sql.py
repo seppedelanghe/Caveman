@@ -18,19 +18,6 @@ class BaseSQLiteModel(BaseSQLModel):
     class Config:
         arbitrary_types_allowed = True
         allow_population_by_field_name = True
-    
-    def save(self):
-        if self.created_at == None:
-            self.created_at = datetime.utcnow()
-            self.updated_at = datetime.utcnow()
-            return self._manager.insert_one(self)
-        else:
-            self.updated_at = datetime.utcnow()
-            return self._manager.update_one(self)
-
-    def delete(self):
-        self.deleted_at = datetime.utcnow()
-        return self._manager.delete_one(self)
 
     @classmethod
     def __get_manager(cls):
@@ -45,8 +32,10 @@ class BaseSQLiteModel(BaseSQLModel):
         return cls.from_dict(result)
 
     @classmethod
-    def from_dict(cls, values: dict):
-        return cls(**values)
+    def all(cls, **kwargs):
+        manager = cls.__get_manager()
+        result = manager.get_all(cls.__name__, **kwargs)
+        return [cls.from_dict(i) for i in result] if len(result) > 0 else None
 
     @classmethod
     def create_table(cls):

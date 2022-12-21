@@ -53,14 +53,14 @@ class SQLModelManager(BaseModelManager):
         query = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{name}';"
         with SQLite3Context(self.connection_string, self.database_name) as db:
             cursor = db.execute(query)
-            if cursor.fetchone()[0] == name:
+            result = cursor.fetchone()
+            if result and len(result) > 0 and result[0] == name:
                 return True
             return False
         
 
     def create_table(self, schema: dict):
         if self.__check_table(schema['title']):
-            print('Table already exists')
             return True
 
         cols = []
@@ -95,11 +95,16 @@ class SQLModelManager(BaseModelManager):
             query = f"SELECT * FROM {col} WHERE {', '.join(query)} LIMIT {limit};"
             cursor = db.execute(query)
             return cursor.fetchall()
+    
+    def get_all(self, col: str, **kwargs):
+        with SQLite3Context(self.connection_string, self.database_name) as db:
+            query = f"SELECT * FROM {col};"
+            cursor = db.execute(query)
+            return cursor.fetchall()
 
     def insert_one(self, item: BaseSQLModel):
         with SQLite3Context(self.connection_string, self.database_name) as db:
             query = f"INSERT INTO {item._col_name} ({item.sql_columns}) VALUES ({item.q_marks});"
-            print(query)
             cursor = db.execute(query, item.column_values)
             return cursor.lastrowid
 
