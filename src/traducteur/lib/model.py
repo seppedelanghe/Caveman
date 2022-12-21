@@ -1,7 +1,7 @@
 from pydantic import BaseModel as BasePydanticModel
 from datetime import datetime
 from typing import Optional, Any
-import logging
+import logging, os
 
 from .manager import BaseModelManager
 
@@ -81,7 +81,9 @@ class BaseModel(BasePydanticModel):
 
     @classmethod
     def __get_manager(cls) -> BaseModelManager:
-        return BaseModelManager()
+        con_str = os.environ['TRADUCTEUR_CONNECTION_STR']
+        db_name = os.environ['TRADUCTEUR_DATABASE']
+        return BaseModelManager(con_str, db_name)
 
     @classmethod
     def get(cls, id: str):
