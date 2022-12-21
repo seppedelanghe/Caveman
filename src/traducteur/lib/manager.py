@@ -1,4 +1,3 @@
-from traducteur.lib.model import BaseModel, BaseSQLModel
 from traducteur.lib.context import MongoContext, SQLite3Context
 from bson import ObjectId
 from pymongo.cursor import Cursor
@@ -15,7 +14,7 @@ class BaseModelManager:
     def exists_where(self, col: str, query):
         pass
 
-    def insert_one(self, item: BaseModel):
+    def insert_one(self, item):
         pass
 
     def get_one(self, col: str, id: str):
@@ -24,7 +23,7 @@ class BaseModelManager:
     def get_many(self, col: str, query, limit: int):
         pass
 
-    def update_one(self, update: BaseModel):
+    def update_one(self, update):
         pass
 
     def delete_one(self, query):
@@ -102,19 +101,19 @@ class SQLModelManager(BaseModelManager):
             cursor = db.execute(query)
             return cursor.fetchall()
 
-    def insert_one(self, item: BaseSQLModel):
+    def insert_one(self, item):
         with SQLite3Context(self.connection_string, self.database_name) as db:
             query = f"INSERT INTO {item._col_name} ({item.sql_columns}) VALUES ({item.q_marks});"
             cursor = db.execute(query, item.column_values)
             return cursor.lastrowid
 
-    def update_one(self, update: BaseSQLModel):
+    def update_one(self, update):
         with SQLite3Context(self.connection_string, self.database_name) as db:
             query = f"UPDATE {update._col_name} SET {update.sql_update} WHERE id = ?;"
             cursor = db.execute(query, update.id)
             return cursor.lastrowid
 
-    def delete_one(self, item: BaseSQLModel):
+    def delete_one(self, item):
         with SQLite3Context(self.connection_string, self.database_name) as db:
             query = f"DELETE FROM {item._col_name} WHERE id = ?;"
             cursor = db.execute(query, item.id)
@@ -174,19 +173,19 @@ class MongoModelManager(BaseModelManager):
             cursor = self.find(column, query, **kwargs)
             return list(self._after(cursor, **kwargs))
 
-    def insert_one(self, item: BaseModel):
+    def insert_one(self, item):
         with MongoContext(self.connection_string, self.database_name, item._col_name) as column:
             result = column.insert_one(item.dict())
             item.id = result.inserted_id
             return item
 
-    def update_one(self, update: BaseModel):
+    def update_one(self, update):
         with MongoContext(self.connection_string, self.database_name, update._col_name) as column:
             query = {'_id': ObjectId(update.id) }
             column.update_one(query, {"$set": update.dict()})
             return update
 
-    def delete_one(self, item: BaseModel):
+    def delete_one(self, item):
         with MongoContext(self.connection_string, self.database_name, item._col_name) as column:
             query = {'_id': ObjectId(item.id)}
             column.delete_one(query)

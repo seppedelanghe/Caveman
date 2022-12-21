@@ -1,7 +1,7 @@
 from pydantic import Field
 from typing import Optional
 from bson import ObjectId
-import os, logging
+import os
 
 from traducteur.lib.model import BaseModel
 from traducteur.lib.manager import MongoModelManager
