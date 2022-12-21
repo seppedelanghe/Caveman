@@ -104,9 +104,8 @@ class BaseSQLModel(BaseModel):
 
     @classmethod
     def get_one_where(cls, query, **kwargs):
-        manager = cls.__get_manager()
-        result = manager.get_one(cls.__name__, query, **kwargs)
-        return cls.from_dict(result) if result else None
+        result = cls.get_where_raw(query, **kwargs)
+        return cls.from_dict(result[0]) if len(result) == 1 else None
 
     @classmethod
     def all(cls, **kwargs):
