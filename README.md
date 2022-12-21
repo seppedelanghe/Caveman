@@ -1,7 +1,7 @@
 # Traducteur
 
 Traducteur is a pydantic model based database manager.
-It currently only supports mongodb.
+It currently only supports mongodb with SQL support on the way.
 
 ## Requirements
 
