@@ -76,15 +76,16 @@ class BaseModel(BasePydanticModel):
         pass
 
     @classmethod
+    def __get_manager(cls) -> BaseModelManager:
+        pass
+
+    @classmethod
     def from_dict(cls, values: dict):
         return cls(**values)
 
-    @classmethod
-    def __get_manager(cls) -> BaseModelManager:
-        con_str = os.environ['TRADUCTEUR_CONNECTION_STR']
-        db_name = os.environ['TRADUCTEUR_DATABASE']
-        return BaseModelManager(con_str, db_name)
 
+
+class BaseSQLModel(BaseModel):
     @classmethod
     def get(cls, id: str):
         manager = cls.__get_manager()
@@ -125,11 +126,9 @@ class BaseModel(BasePydanticModel):
         try:
             return cls.__get_manager().exists_where(cls.__name__, query)
         except Exception as e:
-            logging.error(e)
             return False
 
 
-class BaseSQLModel(BaseModel):
     @property
     def sql_columns(self):
         return ', '.join(self.column_names)
