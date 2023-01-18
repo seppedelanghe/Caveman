@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "traducteur"
+version = "0.1.0"
+description = "Traducteur is the middle man to handle data"
+authors = ["Seppe De Langhe <seppedelanghe@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pydantic = "^1.10.4"
+
+[tool.poetry.group.redis]
+
+[tool.poetry.group.redis.dependencies]
+redis = "^4.4.2"
+
+[tool.poetry.group.mongo]
+
+[tool.poetry.group.mongo.dependencies]
+pymongo = "^4.3.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
