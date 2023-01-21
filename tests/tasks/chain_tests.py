@@ -16,6 +16,7 @@ class ChainBuildingTests(BaseRedisTaskTest):
 
         self.parent = RedisTask(channel='some-channel', action=test_action, id="uuid_1")
         self.child = RedisTask(channel='some-channel', action=test_action, id="uuid_2")
+        self.child2 = RedisTask(channel='some-channel', action=test_action, id="uuid_3")
 
     def test_tasks_can_set_parent(self):
         self.child.set_parent(self.parent.id)
@@ -77,6 +78,9 @@ class ChainBuildingTests(BaseRedisTaskTest):
     def test_digest_chained_tasks_have_correct_outputs(self):
         self.parent.add_child(self.child)
         self.child.set_parent(self.parent.id)
+        
+        self.child.add_child(self.child2)
+        self.child2.set_parent(self.child.id)
 
         # should queue parent and all children
         self.parent.queue()
@@ -84,17 +88,23 @@ class ChainBuildingTests(BaseRedisTaskTest):
         
         # without worker => manual child digest
         self.child.digest()
+        self.child2.digest()
 
         r = self.redis_instance()
         p: RedisTask = pickle.loads(r.get(self.parent.id))
         c: RedisTask = pickle.loads(r.get(self.child.id))
+        c2: RedisTask = pickle.loads(r.get(self.child2.id))
 
         self.assertEqual(p.tout, {
-            'number': 4
+            'number': 2**2
         })
 
         self.assertEqual(c.tout, {
-           'number': 8
+           'number': 2**3
+        })
+
+        self.assertEqual(c2.tout, {
+           'number': 2**4
         })
 
 
