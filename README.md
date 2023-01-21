@@ -1,6 +1,13 @@
 # Traducteur
 Traducteur is a database model manager and task sheduler which aims to make developing basic app with database models and tasks faster and easier.
 
+
+<div align="center">
+    <img src="https://img.shields.io/pypi/v/traducteur"/>
+    <img src="https://img.shields.io/pypi/dm/traducteur"/>
+    <img src="https://img.shields.io/pypi/pyversions/traducteur"/>
+</div>
+
 ## Requirements
 - `python ^3.8`
 - `pydantic ^1.10.4`
@@ -86,6 +93,37 @@ task.digest() #
 result = task.result()
 ```
 
+### Chain tasks
+Tasks can be chained together for larger workloads
+```python
+def double(number: int):
+    return {
+        'number': number * 2
+    }
+
+# make tasks
+one = BaseTask(action=double)
+two = BaseTask(action=double)
+three = BaseTask(action=double)
+
+# chain tasks
+two.set_parent(one)
+three.set_parent(two)
+
+# queue parent task
+one.queue(number=2)
+
+###############
+# in a worker #
+one.digest()  #
+###############
+
+# some time later
+result = one.result()
+assert result == 8, "Should be 8 as 2*2*2 == 8"
+```
+
+
 ## Available functionality
 
 ### Context managers
@@ -103,19 +141,33 @@ result = task.result()
 ### Tasks
 - RedisTask
 
-## Todo
+# Todo / in progress
 
 ### Models
 - [ ] SQLite support
 
 ### Tasks
-- [ ] Task chains
-    - synchronous
-    - asynchronous
+- [ ] Chain tasks
+    - [x] Redis
+    - [ ] Mongo
+    - [ ] SQL
 - [ ] Task worker
-  	- Single Process
-    - Multi Process
+  	- [ ] Single Process
+    - [ ] Multi Process
 - [ ] RabbitMQ task
 
 ### Managers
 - [ ] SQLite manager
+
+
+# Tests
+
+Tests can be found in the `tests` folder. They use pythons `unittest` and can be run with:
+```
+python3 -m unittest path/to/test.py
+```
+
+### Available tests
+- Redis task
+    - Basic functions
+    - Chaining
