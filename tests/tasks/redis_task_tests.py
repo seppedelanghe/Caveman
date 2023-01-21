@@ -1,5 +1,4 @@
-import unittest
-import os
+from .base_redis_test import BaseRedisTaskTest
 
 from traducteur.tasks.task import RedisTask
 from traducteur.tasks.base.status import TaskStatus
@@ -9,13 +8,9 @@ def test_action(**kwargs) -> dict:
         'math': 1 + 2
     }
 
-class RedisTaskTests(unittest.TestCase):
+class RedisTaskTests(BaseRedisTaskTest):
     def setUp(self) -> None:
         super().setUp()
-
-        os.environ['REDIS_HOST'] = 'localhost'
-        os.environ['REDIS_PORT'] = '6379'
-        os.environ['REDIS_TTL'] = '60'
 
         self.task = RedisTask(channel='some-channel', action=test_action)
 
