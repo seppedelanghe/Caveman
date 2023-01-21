@@ -10,18 +10,13 @@ from ...exceptions.tasks import TaskException
 
 class BaseTask(BaseModel):
     action: Union[Callable, str]
-    id: int = 0
     status: TaskStatus = TaskStatus.NONE
     lifetime: TaskLifetime = TaskLifetime()
     tin: Optional[dict] = None
     tout: Optional[dict] = None
 
-    children: List[str] = []
+    children: list = []
     parent: Optional[str] = None
-
-    @property
-    def instant(self) -> bool:
-        return self.parent is None
     
     @property
     def has_parent(self) -> bool:
@@ -60,10 +55,13 @@ class BaseTask(BaseModel):
             raise TaskException('Task action is already deserialized!')
         self.action = types.FunctionType(marshal.loads(self.action), globals(), f"task_{self.id}")
 
-    def add_child(self, tid: str):
+    def add_child_tid(self, tid: Union[str, int]):
         self.children.append(tid)
 
-    def set_parent(self, tid: str):
+    def add_child(self, task):
+        self.children.append(task)
+
+    def set_parent(self, tid: Union[str, int]):
         if self.has_parent:
             logging.warning('This task already has a parent, overriding.')
         self.parent = tid

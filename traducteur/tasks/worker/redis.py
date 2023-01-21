@@ -1,4 +1,3 @@
-import pickle
 import json
 import redis
 import time
@@ -30,7 +29,7 @@ class RedisTaskWorker(BaseTaskWorker):
                 message: dict = json.loads(message)
                 task: Optional[bytes] = self.r.get(message['id'])
                 if isinstance(task, bytes):
-                    task: RedisTask = pickle.loads()
+                    task: RedisTask = RedisTask.unpickle(task)
                     task.digest()
                 elif self.throws:
                     raise TaskWorkerException(f"Got message for new task, but no task found with uuid: {message['id']}!")
