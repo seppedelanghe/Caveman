@@ -17,6 +17,7 @@ pymongo = {version = "^4.3.3", optional = true}
 mongo = ["pymongo"]
 tasks = ["redis"]
 caching = ["redis"]
+nosql = ["pymongo", "redis"]
 
 [build-system]
 requires = ["poetry-core"]
