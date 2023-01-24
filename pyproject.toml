@@ -12,12 +12,15 @@ pydantic = "^1.10.4"
 # optional packages
 redis = {version = "^4.2.2", optional = true}
 pymongo = {version = "^4.3.3", optional = true}
+sqlalchemy = {version = "^1.4.46", optional = true}
 
 [tool.poetry.extras]
 mongo = ["pymongo"]
 tasks = ["redis"]
 caching = ["redis"]
 nosql = ["pymongo", "redis"]
+sql = ["sqlalchemy"]
+all = ["redis", "pymongo", "sqlalchemy"]
 
 [build-system]
 requires = ["poetry-core"]

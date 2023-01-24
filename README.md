@@ -15,13 +15,33 @@ Traducteur is a database model manager and task sheduler which aims to make deve
 - `python ^3.8`
 - `pydantic ^1.10.4`
 
-
 ### Optional
 __For mongo db:__
 - `pymongo ^4.3.3`
 
 __For task queueing or redis model management:__
 - `redis-py ^4.4.2`
+
+## Installation
+__Base install:__
+```
+pip install traducteur
+```
+
+__Install with extras:__
+```
+pip install "traducteur[tasks]"
+```
+This example will install traducteur and all the packages you need to use traducteur tasks.
+
+__optional extras:__
+- sql
+- nosql
+- caching
+- mongo
+- tasks
+- all
+
 
 ## The idea
 
@@ -35,8 +55,8 @@ with BaseContext(connection_string) as db:
 Model managers use context managers
 ```python
 manager = BaseModelManager(connection_string)
-result = manager.find_one(query)
-result = manager.delete(query)
+result = manager.get(example_id)
+result = manager.delete(example_id)
 ```
 
 ### Models
@@ -128,7 +148,6 @@ result = one.result()
 assert result == 8, "Should be 8 as 2*2*2 == 8"
 ```
 
-
 ## Available functionality
 
 ### Context managers
@@ -138,18 +157,23 @@ assert result == 8, "Should be 8 as 2*2*2 == 8"
 
 ### Model managers
 - MongoModelManager
+- SQLModelManager
+  - SQLQueryBuilder
+
+### Query filters
+- Datetime filter
+- Number filter
+- String filter
 
 ### Models
 - BaseMongoModel
 - BaseRedisModel
+- BaseSQLModel
 
 ### Tasks
 - RedisTask
 
 # Todo / in progress
-
-### Models
-- [ ] SQLite support
 
 ### Tasks
 - [ ] Chain tasks
@@ -161,18 +185,18 @@ assert result == 8, "Should be 8 as 2*2*2 == 8"
     - [ ] Multi Process
 - [ ] RabbitMQ task
 
-### Managers
-- [ ] SQLite manager
-
-
 # Tests
 
-Tests can be found in the `tests` folder. They use pythons `unittest` and can be run with:
+Tests can be found in the `test` folder. They use pythons `unittest` and can be run with:
 ```
 python3 -m unittest path/to/test.py
 ```
 
+Tests get automatically run after each push.
+
 ### Available tests
+- Mongo model
+- Mongo sorting
 - Redis task
     - Basic functions
     - Chaining

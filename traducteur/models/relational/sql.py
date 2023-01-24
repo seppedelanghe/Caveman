@@ -9,7 +9,7 @@ from sqlalchemy import String, Column, DATETIME
 from sqlalchemy.orm import declarative_base
 
 from ..base import BaseDatabaseModel
-from ...managers.sql import SQLManager
+from ...managers.sql import SQLModelManager
 
 T = TypeVar('T')
 
@@ -91,7 +91,7 @@ class BaseSQLModel:
 
     @classmethod
     def manager(cls):
-        return SQLManager[cls](os.environ.get('SQL_CONNECTION_STRING'))
+        return SQLModelManager[cls](os.environ.get('SQL_CONNECTION_STRING'))
 
 
 SQLBase = declarative_base(cls=BaseSQLModel)
