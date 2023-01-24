@@ -1,9 +1,9 @@
-from .base_redis_test import BaseRedisTaskTest
+from test.tasks.redis.base_redis_test import BaseRedisTaskTest
 
 from traducteur.tasks.task import RedisTask
 from traducteur.tasks.base.status import TaskStatus
 
-from ..mock.mock_complex import test_complex_func
+from test.mock.mock_complex import test_complex_func
 
 def test_action(**kwargs) -> dict:
     return {

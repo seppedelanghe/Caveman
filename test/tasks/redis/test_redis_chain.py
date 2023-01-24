@@ -1,14 +1,16 @@
 import redis, os, pickle
 
-from .base_redis_test import BaseRedisTaskTest
+from test.tasks.redis.base_redis_test import BaseRedisTaskTest
 
 from traducteur.tasks.task import RedisTask
 from traducteur.tasks.base.status import TaskStatus
+
 
 def test_action(**kwargs) -> dict:
     return {
         'number': kwargs.get('number', 2) * 2
     }
+
 
 class ChainBuildingTests(BaseRedisTaskTest):
     def setUp(self) -> None:
