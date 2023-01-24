@@ -3,6 +3,8 @@ from .base_redis_test import BaseRedisTaskTest
 from traducteur.tasks.task import RedisTask
 from traducteur.tasks.base.status import TaskStatus
 
+from ..mock.mock_complex import test_complex_func
+
 def test_action(**kwargs) -> dict:
     return {
         'math': 1 + 2
@@ -58,3 +60,12 @@ class RedisTaskTests(BaseRedisTaskTest):
 
         self.task.digest()
         self.assertEqual(self.task.status, TaskStatus.SUCCEEDED)
+
+    def test_task_can_queue_complex_functions(self):
+        t = RedisTask(channel='some-channel', action=test_complex_func)
+        t.queue(a=2, b=44)
+        t.digest()
+
+        self.assertIsNotNone(t.tout)
+        self.assertIsInstance(t.tout, dict)
+        self.assertEqual(t.status, TaskStatus.SUCCEEDED)
