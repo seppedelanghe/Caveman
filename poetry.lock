@@ -4,8 +4,8 @@
 name = "async-timeout"
 version = "4.0.2"
 description = "Timeout context manager for asyncio programs"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "async-timeout-4.0.2.tar.gz", hash = "sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15"},
@@ -16,8 +16,8 @@ files = [
 name = "dnspython"
 version = "2.3.0"
 description = "DNS toolkit"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7,<4.0"
 files = [
     {file = "dnspython-2.3.0-py3-none-any.whl", hash = "sha256:89141536394f909066cabd112e3e1a37e4e654db00a25308b0f130bc3152eb46"},
@@ -90,8 +90,8 @@ email = ["email-validator (>=1.0.3)"]
 name = "pymongo"
 version = "4.3.3"
 description = "Python driver for MongoDB <http://www.mongodb.org>"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "pymongo-4.3.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:74731c9e423c93cbe791f60c27030b6af6a948cef67deca079da6cd1bb583a8e"},
@@ -185,8 +185,8 @@ zstd = ["zstandard"]
 name = "redis"
 version = "4.4.2"
 description = "Python client for Redis database and key-value store"
-category = "dev"
-optional = false
+category = "main"
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "redis-4.4.2-py3-none-any.whl", hash = "sha256:e6206448e2f8a432871d07d432c13ed6c2abcf6b74edb436c99752b1371be387"},
@@ -212,7 +212,12 @@ files = [
     {file = "typing_extensions-4.4.0.tar.gz", hash = "sha256:1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa"},
 ]
 
+[extras]
+caching = ["redis"]
+mongo = ["pymongo"]
+tasks = ["redis"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "1e506444390425362584898f00f09231efaabf5962b86bd9b08ac0cfe8e21042"
+content-hash = "9ceb7f2412e573da717702ff9f503c30fef07e4c936edcf34b668d6c309de321"

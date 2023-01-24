@@ -9,16 +9,14 @@ readme = "README.md"
 python = "^3.8"
 pydantic = "^1.10.4"
 
-[tool.poetry.group.redis]
+# optional packages
+redis = {version = "^4.2.2", optional = true}
+pymongo = {version = "^4.3.3", optional = true}
 
-[tool.poetry.group.redis.dependencies]
-redis = "^4.4.2"
-
-[tool.poetry.group.mongo]
-
-[tool.poetry.group.mongo.dependencies]
-pymongo = "^4.3.3"
-
+[tool.poetry.extras]
+mongo = ["pymongo"]
+tasks = ["redis"]
+caching = ["redis"]
 
 [build-system]
 requires = ["poetry-core"]
