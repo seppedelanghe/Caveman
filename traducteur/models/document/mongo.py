@@ -36,21 +36,18 @@ class BaseMongoModel(BaseDatabaseModel):
         }
 
     def save(self):
-        super().save()
         manager = self.__get_manager()
-        if self.created_at == None:
-            manager.insert_one(self)
+        if self.created_at is None:
+            super().save()
+            return manager.insert_one(self)
         else:
-            manager.update_one(self)
-
-        return self
+            super().save()
+            return manager.update_one(self)
 
     def delete(self):
         super().delete()
         manager = self.__get_manager()
-        manager.delete_one(self)
-
-        return self
+        return manager.delete_one(self)
 
     @classmethod
     def __get_manager(cls) -> MongoModelManager:
@@ -97,5 +94,5 @@ class BaseMongoModel(BaseDatabaseModel):
     def exists_where(cls, query) -> bool:
         try:
             return cls.__get_manager().exists_where(cls.__name__, query)
-        except Exception as e:
+        except Exception:
             return False

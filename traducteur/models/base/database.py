@@ -8,12 +8,12 @@ from . import BaseModel
 class BaseDatabaseModel(BaseModel):
     id: str = uuid4().hex
 
-    created_at: datetime = datetime.utcnow()
-    updated_at: datetime = datetime.utcnow()
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     deleted_at: Optional[datetime] = None
 
     def save(self):
-        if self.created_at == None:
+        if self.created_at is None:
             self.created_at = datetime.utcnow()
             self.updated_at = datetime.utcnow()
         else:
