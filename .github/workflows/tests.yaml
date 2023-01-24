@@ -4,6 +4,11 @@ on: [push]
 
 jobs:
   unittest:
+    env:
+      MONGO_CONNECTION_STR = 'mongodb+srv://${{secrets.MONGO_USER}}:${{secrets.MONGO_PASSWORD}}@${{secrets.MONGO_URL}}'
+      MONGO_DATABASE_NAME = 'traducteur'
+      SQL_CONNECTION_STR = 'sqlite:///test.db'
+
     runs-on: ubuntu-latest
     strategy:
       matrix:
