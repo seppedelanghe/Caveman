@@ -5,14 +5,19 @@ Traducteur is a database model manager and task sheduler which aims to make deve
 <div align="center">
     <img src="https://img.shields.io/pypi/v/traducteur"/>
     <img src="https://img.shields.io/pypi/dm/traducteur"/>
+    <img src="https://img.shields.io/github/actions/workflow/status/seppedelanghe/traducteur/tests.yaml?label=tests" />
+    <br/>
     <img src="https://img.shields.io/pypi/pyversions/traducteur"/>
+    <img src="https://img.shields.io/github/languages/code-size/seppedelanghe/traducteur"/>
 </div>
 
 ## Requirements
 - `python ^3.8`
 - `pydantic ^1.10.4`
 
-__For mongo db management:__
+
+### Optional
+__For mongo db:__
 - `pymongo ^4.3.3`
 
 __For task queueing or redis model management:__
