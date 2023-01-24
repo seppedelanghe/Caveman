@@ -2,7 +2,7 @@ import pickle, json
 from typing import Optional
 
 from ..base import BaseTask
-from ...models.nosql import BaseRedisModel
+from ...models.document import BaseRedisModel
 
 
 class RedisTask(BaseTask, BaseRedisModel):
