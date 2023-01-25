@@ -4,7 +4,7 @@ from .base import BaseDatabaseContext
 
 
 class SQLite3Context(BaseDatabaseContext):
-    def __init__(self, connection_string: str, db_name: str):
+    def __init__(self, connection_string: str, db_name: str = ''):
         super().__init__(connection_string, db_name)
 
         self.client = sqlite3.connect(self.connection_string)
