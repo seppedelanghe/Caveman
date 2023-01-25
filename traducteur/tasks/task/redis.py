@@ -1,6 +1,7 @@
-import pickle, json
+import json
 from typing import Optional
 
+import dill as pickle
 from ..base import BaseTask
 from ...models.document import BaseRedisModel
 
@@ -27,8 +28,8 @@ class RedisTask(BaseTask, BaseRedisModel):
 
         # if self has parent => override tin with parents tout
         if self.has_parent:
-            parent: BaseTask = r.get(self.parent)
-            parent = self.unpickle(parent)
+            parent: bytes = r.get(self.parent)
+            parent: BaseTask = self.unpickle(parent)
             self.tin = parent.tout
 
         # exec
@@ -68,3 +69,4 @@ class RedisTask(BaseTask, BaseRedisModel):
     @classmethod
     def unpickle(cls, b: bytes):
         return pickle.loads(b)
+    
