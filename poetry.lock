@@ -362,12 +362,14 @@ files = [
 ]
 
 [extras]
+all = ["redis", "pymongo", "sqlalchemy"]
 caching = ["redis"]
 mongo = ["pymongo"]
 nosql = ["pymongo", "redis"]
+sql = ["sqlalchemy"]
 tasks = ["redis"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "7f00b5f3fae332e7d7e154c1c2bb5fefcae197d61c1802c0d3b476a06a36fcea"
+content-hash = "3281d3acadd30ab70bd78d66d0c580a7500598f1b0d97bf14d911bc8ce0ba376"
