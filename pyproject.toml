@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "traducteur"
-version = "0.4.0"
+version = "0.4.1"
 description = "Traducteur is the middle man to handle your basic data needs."
 authors = ["Seppe De Langhe <seppedelanghe@gmail.com>"]
 readme = "README.md"
@@ -13,14 +13,15 @@ pydantic = "^1.10.4"
 redis = {version = "^4.2.2", optional = true}
 pymongo = {version = "^4.3.3", optional = true}
 sqlalchemy = {version = "^1.4.46", optional = true}
+dill = {version = "^0.3.6", optional = true}
 
 [tool.poetry.extras]
 mongo = ["pymongo"]
-tasks = ["redis"]
+tasks = ["redis", "dill"]
 caching = ["redis"]
 nosql = ["pymongo", "redis"]
 sql = ["sqlalchemy"]
-all = ["redis", "pymongo", "sqlalchemy"]
+all = ["redis", "pymongo", "sqlalchemy", "dill"]
 
 [build-system]
 requires = ["poetry-core"]

@@ -64,12 +64,11 @@ class RedisTaskTests(BaseRedisTaskTest):
         self.assertEqual(self.task.status, TaskStatus.SUCCEEDED)
 
     def test_task_can_queue_complex_functions(self):
-        pass
-        # t = RedisTask(channel='some-channel', action=test_complex_func)
-        # t.queue(a=2, b=44)
-        # t.digest()
-        #
-        # self.assertIsNotNone(t.tout)
-        # self.assertIsInstance(t.tout, dict)
-        # self.assertEqual(t.status, TaskStatus.SUCCEEDED)
+        t = RedisTask(channel='some-channel', action=test_complex_func)
+        t.queue(a=2, b=44)
+        t.digest()
+
+        self.assertIsNotNone(t.tout)
+        self.assertIsInstance(t.tout, dict)
+        self.assertEqual(t.status, TaskStatus.SUCCEEDED)
     
