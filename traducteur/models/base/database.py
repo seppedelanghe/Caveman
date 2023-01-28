@@ -6,11 +6,16 @@ from . import BaseModel
 
 
 class BaseDatabaseModel(BaseModel):
-    id: str = uuid4().hex
+    id: Optional[str] = None
 
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     deleted_at: Optional[datetime] = None
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if self.id is None:
+            self.id = kwargs.get('id', uuid4().hex)
 
     def save(self):
         if self.created_at is None:
