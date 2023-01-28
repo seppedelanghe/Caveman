@@ -14,7 +14,8 @@ class BaseDatabaseModel(BaseModel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.id = kwargs.get('id', uuid4().hex)
+        if self.id is None:
+            self.id = kwargs.get('id', uuid4().hex)
 
     def save(self):
         if self.created_at is None:
