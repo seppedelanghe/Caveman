@@ -13,7 +13,7 @@ class BaseRedisModel(BaseDatabaseModel):
 
     def save(self):
         r = self.redis_instance()
-        r.set(self.id, self.json(), ex=float(os.environ.get('REDIS_TTL', None)))
+        r.set(self.id, self.json(), ex=float(os.environ.get('REDIS_TTL', 86400)))
         return self
 
     def delete(self):
