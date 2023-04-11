@@ -1,12 +1,12 @@
-import json
 import os
+import json
 
-from datetime import datetime
-from typing import Any, TypeVar
 from uuid import uuid4
+from datetime import datetime
+from typing import TypeVar, List
 
-from sqlalchemy import String, Column, DATETIME
 from sqlalchemy.orm import declarative_base
+from sqlalchemy import String, Column, DATETIME
 
 from ..base import BaseDatabaseModel
 from ...managers.sql import SQLModelManager
@@ -45,7 +45,7 @@ class BaseSQLModel:
     def delete(self):
         return self.manager().delete(self)
 
-    def map_to(self, cls):
+    def map_to(self, cls: 'BaseSQLModel'):
         return cls.from_dict(self.dict())
 
     def dict(self):
@@ -62,35 +62,35 @@ class BaseSQLModel:
         Class methods
     """
     @classmethod
-    def map_from(cls, item: BaseDatabaseModel):
+    def map_from(cls, item: BaseDatabaseModel) -> 'BaseSQLModel':
         return cls.from_dict(item.dict())
 
     @classmethod
-    def from_dict(cls, values: dict) -> Any:
+    def from_dict(cls, values: dict) -> 'BaseSQLModel':
         return cls(**values)
 
     @classmethod
-    def from_json(cls, data: str) -> Any:
+    def from_json(cls, data: str) -> 'BaseSQLModel':
         return cls.from_dict(json.loads(data))
 
     @classmethod
-    def get(cls, id: str):
+    def get(cls, id: str) -> 'BaseSQLModel':
         return cls.manager().get(cls, id)
 
     @classmethod
-    def all(cls, *args, **kwargs):
+    def all(cls, **kwargs) -> List['BaseSQLModel']:
         return cls.manager().all(cls, **kwargs)
 
     @classmethod
-    def paginate(cls, *args, **kwargs):
-        return cls.manager().paginate(cls, *args, **kwargs)
+    def paginate(cls, page: int = 0, per_page: int = 30, *args, **kwargs) -> List['BaseSQLModel']:
+        return cls.manager().paginate(cls, page, per_page, *args, **kwargs)
 
     @classmethod
-    def exists(cls, id: str):
+    def exists(cls, id: str) -> bool:
         return cls.manager().exists(cls, id)
 
     @classmethod
-    def manager(cls):
+    def manager(cls) -> SQLModelManager:
         return SQLModelManager[cls](os.environ.get('SQL_CONNECTION_STRING'))
 
 
