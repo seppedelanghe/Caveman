@@ -1,8 +1,8 @@
 import os
 
 from bson import ObjectId
-from typing import Optional
 from pydantic import Field
+from typing import Optional, List
 
 from ..base import BaseDatabaseModel
 from ...managers.mongo import MongoModelManager
@@ -56,7 +56,7 @@ class BaseMongoModel(BaseDatabaseModel):
         return MongoModelManager(con_str, db_name)
 
     @classmethod
-    def get(cls, id: str):
+    def get(cls, id: str) -> Optional['BaseMongoModel']:
         manager = cls.__get_manager()
         result = manager.get_one(cls.__name__, id)
         return cls.from_dict(result) if result else None
@@ -67,21 +67,21 @@ class BaseMongoModel(BaseDatabaseModel):
         return manager.get_many(cls.__name__, query, **kwargs)
 
     @classmethod
-    def get_where(cls, query, **kwargs):
+    def get_where(cls, query, **kwargs) -> List['BaseMongoModel']:
         result = cls.get_where_raw(query, **kwargs)
-        return [cls.from_dict(i) for i in result] if len(result) > 0 else None
+        return [cls.from_dict(i) for i in result] if len(result) > 0 else []
 
     @classmethod
-    def get_one_where(cls, query, **kwargs):
+    def get_one_where(cls, query, **kwargs) -> Optional['BaseMongoModel']:
         manager = cls.__get_manager()
         result = manager.get_one(cls.__name__, query, **kwargs)
         return cls.from_dict(result) if result else None
 
     @classmethod
-    def all(cls, **kwargs):
+    def all(cls, **kwargs) -> List['BaseMongoModel']:
         manager = cls.__get_manager()
         result = manager.get_all(cls.__name__, **kwargs)
-        return [cls.from_dict(i) for i in result] if len(result) > 0 else None
+        return [cls.from_dict(i) for i in result] if len(result) > 0 else []
 
     @classmethod
     def exists(cls, id: str) -> bool:

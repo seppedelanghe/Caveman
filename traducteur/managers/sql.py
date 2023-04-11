@@ -57,7 +57,7 @@ class SQLModelManager(Generic[T]):
             qb = SQLQueryBuilder(session, cls)
             return qb.build(**kwargs).all()
 
-    def paginate(self, cls, page: int, per_page: int = 30, **kwargs) -> List[T]:
+    def paginate(self, cls, page: int = 0, per_page: int = 30, **kwargs) -> List[T]:
         with self.session() as session:
             qb = SQLQueryBuilder(session, cls).build(**kwargs)
             return qb.paginate(page, per_page)
@@ -65,5 +65,3 @@ class SQLModelManager(Generic[T]):
     def query(self, query, one: bool = False, **kwargs) -> Union[Iterable[T], T]:
         with self.session() as session:
             return session.scalars(query).one() if one else session.scalars(query)
-
-
