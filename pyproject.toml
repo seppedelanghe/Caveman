@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "traducteur"
-version = "0.4.6"
+version = "0.4.7"
 description = "Traducteur is the middle man to handle your basic data needs."
 authors = ["Seppe De Langhe <seppedelanghe@gmail.com>"]
 readme = "README.md"
