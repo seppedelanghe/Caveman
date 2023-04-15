@@ -3,7 +3,8 @@ import json
 
 from uuid import uuid4
 from datetime import datetime
-from typing import TypeVar, List
+from pydantic import BaseModel
+from typing import TypeVar, List, Type
 
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import String, Column, DATETIME
@@ -45,8 +46,8 @@ class BaseSQLModel:
     def delete(self):
         return self.manager().delete(self)
 
-    def map_to(self, cls: 'BaseSQLModel'):
-        return cls.from_dict(self.dict())
+    def map_to(self, cls: Type[BaseModel]):
+        return cls(**self.dict())
 
     def dict(self):
         return self.__dict__
@@ -91,7 +92,7 @@ class BaseSQLModel:
 
     @classmethod
     def manager(cls) -> SQLModelManager:
-        return SQLModelManager[cls](os.environ.get('SQL_CONNECTION_STRING'))
+        return SQLModelManager[cls](os.environ.get('SQL_CONNECTION_STRING'), os.environ.get('SQL_CONNECTION_PARAMS', None))
 
 
 SQLBase = declarative_base(cls=BaseSQLModel)

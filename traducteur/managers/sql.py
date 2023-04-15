@@ -1,3 +1,5 @@
+import json
+
 from typing import List, TypeVar, Optional, Generic, Union, Iterable
 
 from sqlalchemy import create_engine
@@ -10,11 +12,15 @@ T = TypeVar("T")
 
 
 class SQLModelManager(Generic[T]):
-    def __init__(self, connection_string):
+    def __init__(self, connection_string, connect_args: Optional[str] = None):
         self.connection_string = connection_string
+        self.connect_args = json.loads(connect_args) if connect_args else None
 
     @property
     def engine(self):
+        if self.connect_args:
+            return create_engine(self.connection_string, connect_args=self.connect_args, echo=False, future=False)
+
         return create_engine(self.connection_string, echo=False, future=False)
 
     def session(self) -> Session:
