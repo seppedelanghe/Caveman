@@ -12,7 +12,7 @@ class BaseRedisModel(BaseDatabaseModel):
         return cls.from_json(out) if isinstance(out, bytes) else None
 
     def save(self):
-        r = self.redis_instance()
+        r: redis.Redis = self.redis_instance()
         r.set(self.id, self.json(), ex=float(os.environ.get('REDIS_TTL', '86400')))
         return self
 

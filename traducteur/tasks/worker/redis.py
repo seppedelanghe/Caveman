@@ -1,6 +1,7 @@
 import json
 import redis
 import time
+import logging
 
 from typing import Optional
 
@@ -24,14 +25,16 @@ class RedisTaskWorker(BaseTaskWorker):
         sub.subscribe(self.channel)
 
         while True:
-            message: Optional[str] = sub.get_message()
-            if isinstance(message, str):
-                message: dict = json.loads(message)
-                task: Optional[bytes] = self.r.get(message['id'])
+            message: Optional[dict] = sub.get_message()
+            if isinstance(message, dict) and message['type'] == 'message':
+                data = json.loads(message['data'])
+                task: Optional[bytes] = self.r.get(data['id'])
                 if isinstance(task, bytes):
                     task: RedisTask = RedisTask.unpickle(task)
                     task.digest()
+                    if task.status == 5:
+                        logging.error(task.lifetime.error)
                 elif self.throws:
-                    raise TaskWorkerException(f"Got message for new task, but no task found with uuid: {message['id']}!")
+                    raise TaskWorkerException(f"Got message for new task, but no task found with uuid: {message['data']}!")
 
             time.sleep(self.idle)

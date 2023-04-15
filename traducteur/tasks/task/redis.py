@@ -3,7 +3,7 @@ from typing import Optional
 
 import dill as pickle
 from ..base import BaseTask
-from ...models.document import BaseRedisModel
+from ...models.document.redis import BaseRedisModel
 
 
 class RedisTask(BaseTask, BaseRedisModel):
