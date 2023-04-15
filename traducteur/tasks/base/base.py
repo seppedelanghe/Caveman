@@ -1,4 +1,3 @@
-import marshal, types
 import logging
 
 from typing import Optional, Callable, Union
@@ -6,7 +5,6 @@ from typing import Optional, Callable, Union
 from .status import TaskStatus
 from .lifetime import TaskLifetime
 from ...models.base import BaseModel
-from ...exceptions.tasks import TaskException
 
 
 class BaseTask(BaseModel):
