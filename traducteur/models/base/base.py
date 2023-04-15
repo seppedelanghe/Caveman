@@ -1,6 +1,6 @@
 import json
 
-from typing import Any
+from typing import Any, Type
 from pydantic import BaseModel as BasePydanticModel
 
 
@@ -37,3 +37,10 @@ class BaseModel(BasePydanticModel):
     @classmethod
     def from_json(cls, data: str) -> Any:
         return cls.from_dict(json.loads(data))
+
+    @classmethod
+    def map_from(cls, item: BasePydanticModel) -> 'BaseModel':
+        return cls.from_dict(item.dict())
+
+    def map_to(self, cls: Type[BasePydanticModel]):
+        return cls(**self.dict())
